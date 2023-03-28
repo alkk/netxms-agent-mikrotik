@@ -2,6 +2,11 @@
 
 This repository contains Dockerfile for building (experimental) NetXMS container image for MikroTik routers.
 
+Known issues (correct me if I'm wrong):
+
+* Only folders can be mounted, not files (unlike docker). This means that you need to mount a volume to /netxms/etc and copy your configuration file there instead of mounting it directly to /netxms/etc/nxagentd.conf.
+* If mount point was created manually (e.g. via sftp), it's type will be "directory" instead of "container store" - and permissions will be messed up. The only working way I've found - mount everything, start container, stop container, copy configuration file to correct place, start container.
+
 ## Minimal configuration file
 
 ```ini
@@ -12,7 +17,7 @@ ControlServers=… # list of NetXMS servers with read+execute actions access
 Servers=… # list of NetXMS servers with read-only access
 ```
 
-Save as a file and copy to your router.
+Save it to `nxagentd.conf` and copy to your router to `etc/`.
 
 ## Running container
 
@@ -23,29 +28,45 @@ Then either change registry and pull or transfer image to your router by hand.
 # change registry
 /container/config/set registry-url=https://ghcr.io tmpdir=usb1-part1/pull
 
+# set RAM limit for containers, it's unlimited by default
+/container/config/set ram-high=128M
+
 # add two volumes - one for config file and one for agent's data (agent database, ID file, etc.)
 
-/container/mounts/add name=nxagent-config src=usb1-part1/netxms-agent/nxagentd.conf dst=/netxms/etc/nxagentd.conf
+/container/mounts/add name=nxagent-etc src=usb1-part1/netxms-agent/etc dst=/netxms/etc
 /container/mounts/add name=nxagent-data src=usb1-part1/netxms-agent/data dst=/netxms/var/lib/netxms
 
 # pull image from registry
-/container/add remote-image=ghcr.io/alkk/netxms-agent-mikrotik:4.3.2 interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-config,nxagent-data start-on-boot=yes logging=no
+/container/add remote-image=ghcr.io/alkk/netxms-agent-mikrotik:4.3.2 interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-etc,nxagent-data start-on-boot=yes logging=yes
 
 # or load image from file
-/container/add image-file=usb1-part1/netxms-agent-mikrotik-4.3.2.tar interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-config,nxagent-data start-on-boot=yes logging=no
+/container/add image-file=usb1-part1/netxms-agent-mikrotik-4.3.2.tar interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-etc,nxagent-data start-on-boot=yes logging=yes
 
 # verify that container is imported and in stopped state
+/log/print
 /container/print
 
 # start container
-/container/start number=0 # adjust number to match your container
+/container/start 0 # adjust number to match your container
+/container/stop 0
+
+# copy configuration file to correct place (`usb1-part1/netxms-agent/etc` in this example)
+
+# start container again
+/container/start 0
+
+# verify that agent is running with correct configuration
+/log/print
+
+# (optional) disable container logging
+/container/set 0 logging=no
 ```
 
 ### Volumes and environment variables
 
 The container image supports the following volumes:
 
-* `/netxms/etc` - configuration directory (agent load `nxagentd.conf` file)
+* `/netxms/etc` - configuration directory (agent load `nxagentd.conf` file from there)
 * `/netxms/var/lib/netxms` - agent's data directory
 
 The following environment variables are supported:
