@@ -4,9 +4,9 @@ RUN apk add -u tzdata ca-certificates build-base gcc curl openssl-dev zlib-dev
 RUN apk add pcre-dev perl linux-headers
 
 WORKDIR /
-RUN curl -O https://netxms.org/download/releases/4.3/netxms-4.3.2.tar.gz
-RUN tar -xzf netxms-4.3.2.tar.gz
-WORKDIR /netxms-4.3.2
+RUN curl -O https://netxms.org/download/releases/4.4/netxms-4.4.2.tar.gz
+RUN tar -xzf netxms-4.4.2.tar.gz
+WORKDIR /netxms-4.4.2
 RUN ./configure --prefix=/netxms --with-agent
 RUN make install
 RUN rm -rf /netxms/bin/nx-run-asan-binary /netxms/bin/nxagentd-asan /netxms/bin/nxdevcfg /netxms/include /netxms/share

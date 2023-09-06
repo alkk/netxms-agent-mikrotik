@@ -37,10 +37,10 @@ Then either change registry and pull or transfer image to your router by hand.
 /container/mounts/add name=nxagent-data src=usb1-part1/netxms-agent/data dst=/netxms/var/lib/netxms
 
 # pull image from registry
-/container/add remote-image=ghcr.io/alkk/netxms-agent-mikrotik:4.3.2 interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-etc,nxagent-data start-on-boot=yes logging=yes
+/container/add remote-image=ghcr.io/alkk/netxms-agent-mikrotik:4.4.2 interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-etc,nxagent-data start-on-boot=yes logging=yes
 
 # or load image from file
-/container/add image-file=usb1-part1/netxms-agent-mikrotik-4.3.2.tar interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-etc,nxagent-data start-on-boot=yes logging=yes
+/container/add image-file=usb1-part1/netxms-agent-mikrotik-4.4.2.tar interface=veth1 root-dir=usb1-part1/netxms-agent/root mounts=nxagent-etc,nxagent-data start-on-boot=yes logging=yes
 
 # verify that container is imported and in stopped state
 /log/print
@@ -78,12 +78,12 @@ The following environment variables are supported:
 Note: sbom and provenance should be disabled because of the bugs in the RouterOS container support (at least in v7.8).
 
 ```sh
-docker buildx build --platform=linux/arm64 -t ghcr.io/alkk/netxms-agent-mikrotik:latest -t ghcr.io/alkk/netxms-agent-mikrotik:4.3.2 --sbom=false --provenance=false -o type=docker .
+docker buildx build --platform=linux/arm64 -t ghcr.io/alkk/netxms-agent-mikrotik:latest -t ghcr.io/alkk/netxms-agent-mikrotik:4.4.2 --sbom=false --provenance=false -o type=docker .
 
 # push to GitHub Container Registry
-docker push ghcr.io/alkk/netxms-agent-mikrotik:4.3.2
+docker push ghcr.io/alkk/netxms-agent-mikrotik:4.4.2
 docker push ghcr.io/alkk/netxms-agent-mikrotik:latest
 
 # or save to local file
-docker save ghcr.io/alkk/netxms-agent-mikrotik:4.3.2 > netxms-agent-mikrotik-4.3.2.tar
+docker save ghcr.io/alkk/netxms-agent-mikrotik:4.4.2 > netxms-agent-mikrotik-4.4.2.tar
 ```

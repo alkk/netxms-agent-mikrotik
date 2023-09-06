@@ -31,5 +31,5 @@ jobs:
           sbom: false
           provenance: false
           tags: |
-            ghcr.io/${{ github.repository_owner }}/netxms-agent-mikrotik:4.3.2
+            ghcr.io/${{ github.repository_owner }}/netxms-agent-mikrotik:4.4.2
             ghcr.io/${{ github.repository_owner }}/netxms-agent-mikrotik:latest
