@@ -16,7 +16,7 @@ FROM alpine:3.21.3
 ENV TZ=Europe/Riga
 
 RUN \
-   apk add --no-cache --update su-exec dumb-init ca-certificates jansson libcurl libexpat libpcre32 libssh libssl3 libstdc++ mosquitto-libs pcre sqlite tzdata zlib && \
+   apk add --no-cache --update su-exec dumb-init ca-certificates jansson libcurl libexpat libpcre32 libssh libssl3 libstdc++ mosquitto-libs pcre sqlite-libs tzdata zlib && \
    addgroup -S netxms && adduser -S -G netxms netxms && \
    mkdir -p /netxms/var/lib/netxms && chown -R netxms /netxms/var/lib/netxms && \
    ln -s /usr/share/zoneinfo/${TZ} /etc/localtime && \
