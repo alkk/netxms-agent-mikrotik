@@ -8,7 +8,7 @@ RUN curl -O https://netxms.org/download/releases/5.1/netxms-5.1.4.tar.gz
 RUN tar -xzf netxms-5.1.4.tar.gz
 WORKDIR /netxms-5.1.4
 RUN ./configure --prefix=/netxms --with-agent
-RUN make install
+RUN make -j $(nproc) install
 RUN rm -rf /netxms/bin/nx-run-asan-binary /netxms/bin/nxagentd-asan /netxms/bin/nxdevcfg /netxms/include /netxms/share
 
 FROM alpine:3.21.3
